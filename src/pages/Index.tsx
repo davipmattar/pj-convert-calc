@@ -1,13 +1,13 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { PJCalculator } from "@/components/PJCalculator";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <main className="min-h-screen bg-background">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-blue/5 via-transparent to-financial-green/5" />
+      <div className="relative z-10">
+        <PJCalculator />
       </div>
-    </div>
+    </main>
   );
 };
 
