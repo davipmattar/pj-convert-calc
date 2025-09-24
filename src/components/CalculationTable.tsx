@@ -20,9 +20,18 @@ interface CalculationTableProps {
   data: CalculationData;
   currency: string;
   exchangeRate: number;
+  parameters: {
+    taxaConversao: number;
+    iss: number;
+    proLabore: number;
+    inss: number;
+    contador: number;
+    enderecoFiscal: number;
+    planoSaude: number;
+  };
 }
 
-export const CalculationTable = ({ data, currency, exchangeRate }: CalculationTableProps) => {
+export const CalculationTable = ({ data, currency, exchangeRate, parameters }: CalculationTableProps) => {
   const formatCurrency = (value: number, isForeign = false) => {
     if (isForeign) {
       return new Intl.NumberFormat('pt-BR', {
@@ -51,10 +60,10 @@ export const CalculationTable = ({ data, currency, exchangeRate }: CalculationTa
       label: "Salário Convertido", 
       value: formatCurrency(data.salarioConvertido), 
       type: "converted" as const,
-      description: `Taxa: ${exchangeRate.toFixed(4)} (${currency}/BRL)`
+      description: `Taxa: ${exchangeRate.toFixed(4)} (${currency}/BRL) × ${(parameters.taxaConversao * 100).toFixed(3)}%`
     },
     { 
-      label: "ISS (4,28%)", 
+      label: `ISS (${(parameters.iss * 100).toFixed(2)}%)`, 
       value: `- ${formatCurrency(data.iss)}`, 
       type: "deduction" as const,
       description: "Imposto Sobre Serviços"
@@ -66,7 +75,7 @@ export const CalculationTable = ({ data, currency, exchangeRate }: CalculationTa
       description: "Retirada mínima do sócio"
     },
     { 
-      label: "INSS (7,5% do pro-labore)", 
+      label: `INSS (${(parameters.inss * 100).toFixed(1)}% do pro-labore)`, 
       value: `- ${formatCurrency(data.inss)}`, 
       type: "deduction" as const,
       description: "Previdência Social"

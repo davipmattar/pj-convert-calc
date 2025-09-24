@@ -5,11 +5,21 @@ import { Calculator, RefreshCw } from 'lucide-react';
 import { CurrencySelector, Currency } from './CurrencySelector';
 import { SalaryInput } from './SalaryInput';
 import { CalculationTable } from './CalculationTable';
+import { ParametersEditor, Parameters } from './ParametersEditor';
 import { useCurrencyRates } from '@/hooks/useCurrencyRates';
 
 export const PJCalculator = () => {
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>('USD');
   const [salaryInput, setSalaryInput] = useState('5000');
+  const [parameters, setParameters] = useState<Parameters>({
+    taxaConversao: 0.00908, // 0.908%
+    iss: 0.0428, // 4.28%
+    proLabore: 1320.00,
+    inss: 0.075, // 7.5%
+    contador: 262.33,
+    enderecoFiscal: 39.00,
+    planoSaude: 600.00,
+  });
   const { rates, loading, lastUpdate } = useCurrencyRates();
 
   const parsedSalary = useMemo(() => {
@@ -23,17 +33,16 @@ export const PJCalculator = () => {
     const salarioBruto = parsedSalary;
     const salarioConvertido = salarioBruto * exchangeRate;
     
-    // Taxas conforme especificado
-    const taxaConversao = 0.908; // Interpretando como 90.8% (não 0.908%)
-    const salarioAposConversao = salarioConvertido * taxaConversao;
+    // Aplicar taxa de conversão
+    const salarioAposConversao = salarioConvertido * parameters.taxaConversao;
     
-    const iss = salarioAposConversao * 0.0428; // 4.28%
-    const proLabore = 1320.00;
-    const inss = proLabore * 0.075; // 7.5% sobre pro-labore
-    const contador = 262.33;
-    const enderecoFiscal = 39.00;
+    const iss = salarioAposConversao * parameters.iss;
+    const proLabore = parameters.proLabore;
+    const inss = proLabore * parameters.inss; // % sobre pro-labore
+    const contador = parameters.contador;
+    const enderecoFiscal = parameters.enderecoFiscal;
     const feriasNaoRemuneradas = salarioAposConversao - iss; // Salário convertido - ISS
-    const planoSaude = 600.00;
+    const planoSaude = parameters.planoSaude;
 
     const totalDeducoes = iss + proLabore + inss + contador + enderecoFiscal + feriasNaoRemuneradas + planoSaude;
     const liquidoMensal = salarioAposConversao - totalDeducoes;
@@ -52,7 +61,7 @@ export const PJCalculator = () => {
       liquidoMensal,
       liquidoAnual,
     };
-  }, [parsedSalary, exchangeRate]);
+  }, [parsedSalary, exchangeRate, parameters]);
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -72,7 +81,7 @@ export const PJCalculator = () => {
         )}
       </header>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-3 gap-8">
         <Card className="bg-gradient-card backdrop-blur-sm border-brand-blue/20 shadow-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
@@ -103,26 +112,19 @@ export const PJCalculator = () => {
                 </div>
               )}
             </div>
-
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <h4 className="font-medium text-foreground">Parâmetros utilizados:</h4>
-              <ul className="space-y-1 ml-4">
-                <li>• Taxa de conversão: 90,8%</li>
-                <li>• ISS: 4,28%</li>
-                <li>• Pro-labore: R$ 1.320,00</li>
-                <li>• INSS: 7,5% sobre pro-labore</li>
-                <li>• Contador: R$ 262,33</li>
-                <li>• Endereço fiscal: R$ 39,00</li>
-                <li>• Plano de saúde: R$ 600,00</li>
-              </ul>
-            </div>
           </CardContent>
         </Card>
+
+        <ParametersEditor
+          parameters={parameters}
+          onParametersChange={setParameters}
+        />
 
         <CalculationTable
           data={calculations}
           currency={selectedCurrency}
           exchangeRate={exchangeRate}
+          parameters={parameters}
         />
       </div>
 
