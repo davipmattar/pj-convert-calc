@@ -31,26 +31,27 @@ export const PJCalculator = () => {
 
   const calculations = useMemo(() => {
     const salarioBruto = parsedSalary;
-    const salarioConvertido = salarioBruto * exchangeRate;
     
-    // Aplicar taxa de conversão
-    const salarioAposConversao = salarioConvertido * parameters.taxaConversao;
+    // Salário Convertido = (Valor Bruto Salário x Taxa de Câmbio Atual) x (1 - Taxa de conversão)
+    const salarioConvertido = (salarioBruto * exchangeRate) * (1 - parameters.taxaConversao);
     
-    const iss = salarioAposConversao * parameters.iss;
+    const iss = salarioConvertido * parameters.iss;
     const proLabore = parameters.proLabore;
-    const inss = proLabore * parameters.inss; // % sobre pro-labore
+    const inss = proLabore * parameters.inss; // INSS sobre Pro-labore
     const contador = parameters.contador;
     const enderecoFiscal = parameters.enderecoFiscal;
-    const feriasNaoRemuneradas = salarioAposConversao - iss; // Salário convertido - ISS
+    const feriasNaoRemuneradas = salarioConvertido - iss; // Salário convertido - ISS
     const planoSaude = parameters.planoSaude;
 
-    const totalDeducoes = iss + proLabore + inss + contador + enderecoFiscal + feriasNaoRemuneradas + planoSaude;
-    const liquidoMensal = salarioAposConversao - totalDeducoes;
-    const liquidoAnual = liquidoMensal * 12;
+    // Valor Líquido Anual = ((Salário Convertido - ISS - INSS - Contador - Endereço Fiscal - Plano de Saúde) x 12) - Férias não Remuneradas
+    const liquidoAnual = ((salarioConvertido - iss - inss - contador - enderecoFiscal - planoSaude) * 12) - feriasNaoRemuneradas;
+    
+    // Valor Liquido Mensal = Valor Líquido Anual/12
+    const liquidoMensal = liquidoAnual / 12;
 
     return {
       salarioBruto,
-      salarioConvertido: salarioAposConversao,
+      salarioConvertido,
       iss,
       proLabore,
       inss,
