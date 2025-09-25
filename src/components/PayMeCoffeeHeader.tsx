@@ -32,12 +32,14 @@ export const PayMeCoffeeHeader = () => {
             <span className="text-amber-800 font-medium">
               Gostou da calculadora? 
             </span>
-            <button 
-              onClick={() => window.open('/donate', '_blank')}
-              className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-md text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md"
+            <a
+              href="/donate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-md text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer"
             >
               ☕ Pay me a Coffee
-            </button>
+            </a>
           </div>
           
           {showAnimation && (
