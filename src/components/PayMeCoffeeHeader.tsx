@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Coffee } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const PayMeCoffeeHeader = () => {
   const [donations, setDonations] = useState([
@@ -32,14 +33,12 @@ export const PayMeCoffeeHeader = () => {
             <span className="text-amber-800 font-medium">
               Gostou da calculadora? 
             </span>
-            <a
-              href="/donate"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-md text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer"
+            <Link
+              to="/donate"
+              className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-md text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer inline-block"
             >
               ☕ Pay me a Coffee
-            </a>
+            </Link>
           </div>
           
           {showAnimation && (
