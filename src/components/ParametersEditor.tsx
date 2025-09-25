@@ -34,23 +34,24 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
   };
 
   const handlePercentageInput = (key: keyof Parameters, value: string) => {
-    // Remove tudo exceto dígitos, vírgula e ponto
-    const cleanValue = value.replace(/[^\d.,]/g, '');
+    // Remove tudo exceto dígitos
+    const digits = value.replace(/[^\d]/g, '');
     
-    if (cleanValue === '' || cleanValue === ',' || cleanValue === '.') {
+    if (digits === '') {
       return 0;
     }
     
-    // Substitui vírgula por ponto para conversão
-    const normalizedValue = cleanValue.replace(',', '.');
-    const numericValue = parseFloat(normalizedValue);
+    // Converte para decimal considerando que cada dígito representa uma casa decimal da porcentagem
+    // Ex: "155" vira 1.55% que é 0.0155 em decimal
+    let percentageValue = parseFloat(digits) / 100;
     
-    if (isNaN(numericValue)) {
-      return 0;
+    // Limita a 100%
+    if (percentageValue > 100) {
+      percentageValue = 100;
     }
     
-    // Converte percentual para decimal (5.5 vira 0.055)
-    return numericValue / 100;
+    // Converte percentual para decimal para os cálculos (1.55% vira 0.0155)
+    return percentageValue / 100;
   };
 
   const handleChange = (key: keyof Parameters, value: string | boolean | number) => {
@@ -69,10 +70,10 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
 
   const formatInput = (value: number, isPercentage = false, isCurrency = false) => {
     if (isPercentage) {
-      // Converte decimal para percentual para exibição (0.055 vira "5,500")
+      // Converte decimal para percentual para exibição (0.0155 vira "1,55")
       return (value * 100).toLocaleString('pt-BR', { 
-        minimumFractionDigits: 3, 
-        maximumFractionDigits: 3 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
       });
     }
     if (isCurrency) {
@@ -107,7 +108,7 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
                 handleChange('taxaConversao', newValue);
               }}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
-              placeholder="0,908"
+              placeholder="0,91"
             />
           </div>
 
@@ -124,7 +125,7 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
                 handleChange('iss', newValue);
               }}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
-              placeholder="4,280"
+              placeholder="4,28"
             />
           </div>
 
@@ -158,7 +159,7 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
                 handleChange('inss', newValue);
               }}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
-              placeholder="7,500"
+              placeholder="7,50"
             />
           </div>
 
