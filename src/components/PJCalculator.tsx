@@ -135,11 +135,6 @@ export const PJCalculator = () => {
         />
       </div>
 
-      <footer className="text-center text-sm text-muted-foreground">
-        <p>
-          Ajuste os parâmetros conforme sua situação específica para obter cálculos mais precisos.
-        </p>
-      </footer>
     </div>
   );
 };
