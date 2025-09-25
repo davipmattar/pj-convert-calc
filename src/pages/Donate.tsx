@@ -1,38 +1,17 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Coffee, CreditCard, QrCode, Heart, ArrowLeft } from 'lucide-react';
+import { Coffee, CreditCard, QrCode, Heart, ArrowLeft, Copy, ExternalLink, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Donate() {
-  const [selectedAmount, setSelectedAmount] = useState<number>(10);
-  const [customAmount, setCustomAmount] = useState<string>('');
-  const [cardData, setCardData] = useState({
-    number: '',
-    name: '',
-    expiry: '',
-    cvv: '',
-    email: ''
-  });
+  const [copied, setCopied] = useState(false);
 
-  const predefinedAmounts = [5, 10, 25, 50, 100];
+  const predefinedAmounts = [5, 10, 25];
 
-  const handleAmountSelect = (amount: number) => {
-    setSelectedAmount(amount);
-    setCustomAmount('');
-  };
-
-  const handleCustomAmountChange = (value: string) => {
-    setCustomAmount(value);
-    const numericValue = parseFloat(value.replace(/[^\d.,]/g, '').replace(',', '.'));
-    if (numericValue > 0) {
-      setSelectedAmount(numericValue);
-    }
-  };
+  
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', {
@@ -41,8 +20,9 @@ export default function Donate() {
     });
   };
 
-  // QR Code PIX simulado (base64 de um QR code genérico)
-  const pixQRCode = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0id2hpdGUiLz4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMCwxMCkiPgogICAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIiBmaWxsPSJibGFjayIvPgogICAgPHJlY3QgeD0iMTUwIiB5PSIwIiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIGZpbGw9ImJsYWNrIi8+CiAgICA8cmVjdCB4PSIwIiB5PSIxNTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iYmxhY2siLz4KICA8L2c+Cjwvc3ZnPgo=';
+  // QR Code PIX: tenta usar a imagem do /public, com fallback base64
+  const fallbackPixQRCode = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0id2hpdGUiLz4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMCwxMCkiPgogICAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIiBmaWxsPSJibGFjayIvPgogICAgPHJlY3QgeD0iMTUwIiB5PSIwIiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIGZpbGw9ImJsYWNrIi8+CiAgICA8cmVjdCB4PSIwIiB5PSIxNTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iYmxhY2siLz4KICA8L2c+Cjwvc3ZnPgo=';
+  const [qrSrc, setQrSrc] = useState<string>('/qr-pix.png');
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,124 +51,8 @@ export default function Donate() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Cartão de Crédito */}
-            <Card className="bg-gradient-card backdrop-blur-sm border-brand-blue/20 shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-brand-blue" />
-                  Doação via Cartão
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Seleção de Valor */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">Escolha o valor</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {predefinedAmounts.map((amount) => (
-                      <Button
-                        key={amount}
-                        variant={selectedAmount === amount ? "default" : "outline"}
-                        onClick={() => handleAmountSelect(amount)}
-                        className="text-sm"
-                      >
-                        {formatCurrency(amount)}
-                      </Button>
-                    ))}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="customAmount" className="text-sm">Valor personalizado</Label>
-                    <Input
-                      id="customAmount"
-                      type="text"
-                      placeholder="R$ 0,00"
-                      value={customAmount}
-                      onChange={(e) => handleCustomAmountChange(e.target.value)}
-                      className="bg-white/80 backdrop-blur-sm"
-                    />
-                  </div>
-                  
-                  <div className="text-center p-3 bg-green-50 rounded-lg border border-green-200">
-                    <span className="text-green-800 font-medium">
-                      Valor selecionado: {formatCurrency(selectedAmount)}
-                    </span>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Dados do Cartão */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">E-mail</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="seu@email.com"
-                      value={cardData.email}
-                      onChange={(e) => setCardData({...cardData, email: e.target.value})}
-                      className="bg-white/80 backdrop-blur-sm"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="cardNumber">Número do Cartão</Label>
-                    <Input
-                      id="cardNumber"
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      value={cardData.number}
-                      onChange={(e) => setCardData({...cardData, number: e.target.value})}
-                      className="bg-white/80 backdrop-blur-sm"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="cardName">Nome no Cartão</Label>
-                    <Input
-                      id="cardName"
-                      type="text"
-                      placeholder="NOME COMPLETO"
-                      value={cardData.name}
-                      onChange={(e) => setCardData({...cardData, name: e.target.value})}
-                      className="bg-white/80 backdrop-blur-sm"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="expiry">Validade</Label>
-                      <Input
-                        id="expiry"
-                        type="text"
-                        placeholder="MM/AA"
-                        value={cardData.expiry}
-                        onChange={(e) => setCardData({...cardData, expiry: e.target.value})}
-                        className="bg-white/80 backdrop-blur-sm"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input
-                        id="cvv"
-                        type="text"
-                        placeholder="123"
-                        value={cardData.cvv}
-                        onChange={(e) => setCardData({...cardData, cvv: e.target.value})}
-                        className="bg-white/80 backdrop-blur-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <Button className="w-full bg-brand-blue hover:bg-brand-blue-dark text-white">
-                  Doar {formatCurrency(selectedAmount)}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* PIX */}
+          <div className="grid lg:grid-cols-1 gap-8">
+            {/* Único Card: PIX + Cartão */}
             <Card className="bg-gradient-card backdrop-blur-sm border-brand-blue/20 shadow-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -204,10 +68,11 @@ export default function Donate() {
                   
                   <div className="flex justify-center">
                     <div className="p-4 bg-white rounded-xl border-2 border-dashed border-gray-300">
-                      <img 
-                        src={pixQRCode} 
-                        alt="QR Code PIX" 
+                      <img
+                        src={qrSrc}
+                        alt="QR Code PIX"
                         className="w-48 h-48 object-contain"
+                        onError={() => setQrSrc(fallbackPixQRCode)}
                       />
                     </div>
                   </div>
@@ -216,15 +81,65 @@ export default function Donate() {
                     <Badge variant="secondary" className="text-xs">
                       Chave PIX
                     </Badge>
-                    <div className="p-3 bg-gray-50 rounded-lg border">
-                      <code className="text-sm font-mono text-gray-700">
-                        davimattar2@gmail.com
+                    <div className="p-3 bg-gray-50 rounded-lg border flex items-start justify-between gap-3">
+                      <code className="text-sm font-mono text-gray-700 break-all">
+                        00020126670014BR.GOV.BCB.PIX0111008552141800230Muito obrigado pela sua doação5204000053039865802BR5917Davi Pires Mattar6009SAO PAULO62140510m52ozucXq863049653
                       </code>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0"
+                        onClick={async () => {
+                          await navigator.clipboard.writeText('00020126670014BR.GOV.BCB.PIX0111008552141800230Muito obrigado pela sua doação5204000053039865802BR5917Davi Pires Mattar6009SAO PAULO62140510m52ozucXq863049653');
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 2000);
+                        }}
+                        aria-label={copied ? 'Chave PIX copiada' : 'Copiar chave PIX'}
+                      >
+                        {copied ? (
+                          <span className="inline-flex items-center gap-1 text-green-700">
+                            <Check className="h-4 w-4" /> Copiado!
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1">
+                            <Copy className="h-4 w-4" /> Copiar
+                          </span>
+                        )}
+                      </Button>
+                      <span className="sr-only" aria-live="polite">
+                        {copied ? 'Chave PIX copiada para a área de transferência' : ''}
+                      </span>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Você pode copiar a chave PIX acima para fazer a transferência manualmente
-                    </p>
+                    <div>
+                      <a
+                        href="https://nubank.com.br/cobrar/121p6/68d548b4-5ee1-4aba-8f1a-7daf83446378"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-brand-blue hover:underline"
+                      >
+                        <ExternalLink className="h-4 w-4" /> Pagar via Nubank (Pix)
+                      </a>
+                    </div>
                   </div>
+                </div>
+
+                {/* Seção: Doação via Cartão de Crédito (dentro do mesmo card) */}
+                <Separator />
+                <div className="space-y-3">
+                  <h3 className="flex items-center gap-2 text-2xl font-semibold leading-none tracking-tight text-foreground">
+                    <CreditCard className="h-5 w-5 text-amber-600" /> Doação via Cartão de Crédito
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Para doações via cartão de crédito, acesse o link abaixo:
+                  </p>
+                  <a
+                    href="https://link.mercadopago.com.br/pjnagringa"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-brand-blue hover:underline"
+                  >
+                    <ExternalLink className="h-4 w-4" /> Doar com Cartão (Mercado Pago)
+                  </a>
                 </div>
 
                 <Separator />
@@ -240,16 +155,6 @@ export default function Donate() {
                       </div>
                     ))}
                   </div>
-                </div>
-
-                <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Importante:</strong> Após fazer o PIX, envie o comprovante para 
-                    <br />
-                    <a href="mailto:davimattar2@gmail.com" className="underline font-medium">
-                      davimattar2@gmail.com
-                    </a>
-                  </p>
                 </div>
               </CardContent>
             </Card>

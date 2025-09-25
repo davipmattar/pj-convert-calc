@@ -25,7 +25,7 @@ export const PayMeCoffeeHeader = () => {
   }, [donations.length]);
 
   return (
-    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200/50 py-2">
+    <div className="sticky top-0 z-50 bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200/50 py-2">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-4 text-sm">
           <div className="flex items-center gap-2">

@@ -52,8 +52,8 @@ export const useCurrencyRates = () => {
 
     fetchRates();
     
-    // Atualiza as cotações a cada 5 minutos
-    const interval = setInterval(fetchRates, 5 * 60 * 1000);
+    // Atualiza as cotações a cada 30 segundos
+    const interval = setInterval(fetchRates, 30 * 1000);
     
     return () => clearInterval(interval);
   }, []);
