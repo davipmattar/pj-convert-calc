@@ -28,6 +28,7 @@ interface CalculationTableProps {
     contador: number;
     enderecoFiscal: number;
     planoSaude: number;
+    temFeriasRemuneradas: boolean;
   };
 }
 
@@ -69,12 +70,6 @@ export const CalculationTable = ({ data, currency, exchangeRate, parameters }: C
       description: "Imposto Sobre Serviços"
     },
     { 
-      label: "Pro-labore", 
-      value: `- ${formatCurrency(data.proLabore)}`, 
-      type: "deduction" as const,
-      description: "Retirada mínima do sócio"
-    },
-    { 
       label: `INSS (${(parameters.inss * 100).toFixed(1)}% do pro-labore)`, 
       value: `- ${formatCurrency(data.inss)}`, 
       type: "deduction" as const,
@@ -92,12 +87,13 @@ export const CalculationTable = ({ data, currency, exchangeRate, parameters }: C
       type: "deduction" as const,
       description: "Domicílio fiscal"
     },
-    { 
+    // Só mostrar férias não remuneradas se a pessoa NÃO tem férias remuneradas
+    ...(parameters.temFeriasRemuneradas ? [] : [{ 
       label: "Férias não Remuneradas", 
       value: `- ${formatCurrency(data.feriasNaoRemuneradas)}`, 
       type: "deduction" as const,
       description: "Provisionamento para férias"
-    },
+    }]),
     { 
       label: "Plano de Saúde", 
       value: `- ${formatCurrency(data.planoSaude)}`, 

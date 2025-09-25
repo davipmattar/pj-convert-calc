@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Settings } from "lucide-react";
 
 export interface Parameters {
@@ -11,6 +12,7 @@ export interface Parameters {
   contador: number;
   enderecoFiscal: number;
   planoSaude: number;
+  temFeriasRemuneradas: boolean;
 }
 
 interface ParametersEditorProps {
@@ -19,17 +21,33 @@ interface ParametersEditorProps {
 }
 
 export const ParametersEditor = ({ parameters, onParametersChange }: ParametersEditorProps) => {
-  const handleChange = (key: keyof Parameters, value: string) => {
-    const numericValue = parseFloat(value.replace(',', '.')) || 0;
-    onParametersChange({
-      ...parameters,
-      [key]: numericValue,
-    });
+  const handleChange = (key: keyof Parameters, value: string | boolean) => {
+    if (key === 'temFeriasRemuneradas') {
+      onParametersChange({
+        ...parameters,
+        [key]: value as boolean,
+      });
+    } else {
+      const numericValue = parseFloat(typeof value === 'string' ? value.replace(/[^\d.,]/g, '').replace(',', '.') : '0') || 0;
+      onParametersChange({
+        ...parameters,
+        [key]: numericValue,
+      });
+    }
   };
 
-  const formatInput = (value: number, isPercentage = false) => {
+  const formatInput = (value: number, isPercentage = false, isCurrency = false) => {
     if (isPercentage) {
-      return (value * 100).toFixed(3);
+      return (value * 100).toLocaleString('pt-BR', { 
+        minimumFractionDigits: 3, 
+        maximumFractionDigits: 3 
+      });
+    }
+    if (isCurrency) {
+      return value.toLocaleString('pt-BR', { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+      });
     }
     return value.toFixed(2);
   };
@@ -52,8 +70,13 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
               id="taxaConversao"
               type="text"
               value={formatInput(parameters.taxaConversao, true)}
-              onChange={(e) => handleChange('taxaConversao', (parseFloat(e.target.value.replace(',', '.')) / 100).toString())}
+              onChange={(e) => {
+                const cleanValue = e.target.value.replace(/[^\d.,]/g, '').replace(',', '.');
+                const numericValue = parseFloat(cleanValue) / 100;
+                handleChange('taxaConversao', numericValue.toString());
+              }}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
+              placeholder="0,908"
             />
           </div>
 
@@ -65,8 +88,13 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
               id="iss"
               type="text"
               value={formatInput(parameters.iss, true)}
-              onChange={(e) => handleChange('iss', (parseFloat(e.target.value.replace(',', '.')) / 100).toString())}
+              onChange={(e) => {
+                const cleanValue = e.target.value.replace(/[^\d.,]/g, '').replace(',', '.');
+                const numericValue = parseFloat(cleanValue) / 100;
+                handleChange('iss', numericValue.toString());
+              }}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
+              placeholder="4,280"
             />
           </div>
 
@@ -77,9 +105,10 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
             <Input
               id="proLabore"
               type="text"
-              value={formatInput(parameters.proLabore)}
+              value={formatInput(parameters.proLabore, false, true)}
               onChange={(e) => handleChange('proLabore', e.target.value)}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
+              placeholder="1.320,00"
             />
           </div>
 
@@ -91,8 +120,13 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
               id="inss"
               type="text"
               value={formatInput(parameters.inss, true)}
-              onChange={(e) => handleChange('inss', (parseFloat(e.target.value.replace(',', '.')) / 100).toString())}
+              onChange={(e) => {
+                const cleanValue = e.target.value.replace(/[^\d.,]/g, '').replace(',', '.');
+                const numericValue = parseFloat(cleanValue) / 100;
+                handleChange('inss', numericValue.toString());
+              }}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
+              placeholder="7,500"
             />
           </div>
 
@@ -103,9 +137,10 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
             <Input
               id="contador"
               type="text"
-              value={formatInput(parameters.contador)}
+              value={formatInput(parameters.contador, false, true)}
               onChange={(e) => handleChange('contador', e.target.value)}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
+              placeholder="262,33"
             />
           </div>
 
@@ -116,23 +151,41 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
             <Input
               id="enderecoFiscal"
               type="text"
-              value={formatInput(parameters.enderecoFiscal)}
+              value={formatInput(parameters.enderecoFiscal, false, true)}
               onChange={(e) => handleChange('enderecoFiscal', e.target.value)}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
+              placeholder="39,00"
             />
           </div>
 
-          <div className="space-y-2 md:col-span-2">
+          <div className="space-y-2">
             <Label htmlFor="planoSaude" className="text-sm font-medium">
               Plano de Saúde (R$)
             </Label>
             <Input
               id="planoSaude"
               type="text"
-              value={formatInput(parameters.planoSaude)}
+              value={formatInput(parameters.planoSaude, false, true)}
               onChange={(e) => handleChange('planoSaude', e.target.value)}
               className="bg-white/80 backdrop-blur-sm border-brand-blue/20"
+              placeholder="600,00"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="feriasRemuneradas" className="text-sm font-medium">
+              Tem Férias Remuneradas?
+            </Label>
+            <div className="flex items-center space-x-2 h-10">
+              <Switch
+                id="feriasRemuneradas"
+                checked={parameters.temFeriasRemuneradas}
+                onCheckedChange={(checked) => handleChange('temFeriasRemuneradas', checked)}
+              />
+              <span className="text-sm text-muted-foreground">
+                {parameters.temFeriasRemuneradas ? 'Sim' : 'Não'}
+              </span>
+            </div>
           </div>
         </div>
 

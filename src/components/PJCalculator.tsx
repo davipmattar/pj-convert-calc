@@ -19,6 +19,7 @@ export const PJCalculator = () => {
     contador: 262.33,
     enderecoFiscal: 39.00,
     planoSaude: 600.00,
+    temFeriasRemuneradas: false, // Padrão: Não tem férias remuneradas
   });
   const { rates, loading, lastUpdate } = useCurrencyRates();
 
@@ -43,8 +44,13 @@ export const PJCalculator = () => {
     const feriasNaoRemuneradas = salarioConvertido - iss; // Salário convertido - ISS
     const planoSaude = parameters.planoSaude;
 
-    // Valor Líquido Anual = ((Salário Convertido - ISS - INSS - Contador - Endereço Fiscal - Plano de Saúde) x 12) - Férias não Remuneradas
-    const liquidoAnual = ((salarioConvertido - iss - inss - contador - enderecoFiscal - planoSaude) * 12) - feriasNaoRemuneradas;
+    // Valor Líquido Anual = ((Salário Convertido - ISS - INSS - Contador - Endereço Fiscal - Plano de Saúde) x 12) - Férias não Remuneradas (se aplicável)
+    let liquidoAnual = (salarioConvertido - iss - inss - contador - enderecoFiscal - planoSaude) * 12;
+    
+    // Se não tem férias remuneradas, subtrai as férias não remuneradas
+    if (!parameters.temFeriasRemuneradas) {
+      liquidoAnual = liquidoAnual - feriasNaoRemuneradas;
+    }
     
     // Valor Liquido Mensal = Valor Líquido Anual/12
     const liquidoMensal = liquidoAnual / 12;
@@ -131,8 +137,7 @@ export const PJCalculator = () => {
 
       <footer className="text-center text-sm text-muted-foreground">
         <p>
-          Esta calculadora fornece estimativas baseadas em parâmetros padrão. 
-          Para orientações específicas sobre sua situação fiscal, consulte um contador qualificado.
+          Ajuste os parâmetros conforme sua situação específica para obter cálculos mais precisos.
         </p>
       </footer>
     </div>
