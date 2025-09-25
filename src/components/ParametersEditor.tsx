@@ -34,15 +34,23 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
   };
 
   const handlePercentageInput = (key: keyof Parameters, value: string) => {
-    // Remove tudo exceto dígitos
-    const digits = value.replace(/[^\d]/g, '');
+    // Remove tudo exceto dígitos, vírgula e ponto
+    const cleanValue = value.replace(/[^\d.,]/g, '');
     
-    if (digits === '') {
+    if (cleanValue === '' || cleanValue === ',' || cleanValue === '.') {
       return 0;
     }
     
-    // Converte para decimal (percentual com 4 casas decimais para permitir entrada como 15055 = 1.5055%)
-    return parseFloat(digits) / 10000;
+    // Substitui vírgula por ponto para conversão
+    const normalizedValue = cleanValue.replace(',', '.');
+    const numericValue = parseFloat(normalizedValue);
+    
+    if (isNaN(numericValue)) {
+      return 0;
+    }
+    
+    // Converte percentual para decimal (5.5 vira 0.055)
+    return numericValue / 100;
   };
 
   const handleChange = (key: keyof Parameters, value: string | boolean | number) => {
@@ -61,6 +69,7 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
 
   const formatInput = (value: number, isPercentage = false, isCurrency = false) => {
     if (isPercentage) {
+      // Converte decimal para percentual para exibição (0.055 vira "5,500")
       return (value * 100).toLocaleString('pt-BR', { 
         minimumFractionDigits: 3, 
         maximumFractionDigits: 3 
