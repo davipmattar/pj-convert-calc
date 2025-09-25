@@ -74,7 +74,7 @@ export const PJCalculator = () => {
     <div className="container mx-auto px-4 py-8 space-y-8">
       <header className="text-center space-y-4">
         <h1 className="text-4xl font-bold text-foreground">
-          Calculadora PJ Moeda Estrangeira
+          Calculadora PJ na Gringa
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Calcule sua remuneração líquida como Pessoa Jurídica recebendo em moeda estrangeira, 
