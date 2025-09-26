@@ -50,7 +50,7 @@ export const PayMeCoffeeHeader = () => {
       });
       
       setTimeout(() => setShowAnimation(false), 3000);
-    }, 22000);
+    }, 32000);
 
     return () => clearInterval(interval);
   }, [donations.length]);
