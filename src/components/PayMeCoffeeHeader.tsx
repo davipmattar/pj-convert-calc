@@ -44,7 +44,7 @@ export const PayMeCoffeeHeader = () => {
       setCurrentDonation((prev) => (prev + 1) % donations.length);
       
       setTimeout(() => setShowAnimation(false), 3000);
-    }, 17000);
+    }, 22000);
 
     return () => clearInterval(interval);
   }, [donations.length]);
