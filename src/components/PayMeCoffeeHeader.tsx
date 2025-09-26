@@ -41,7 +41,13 @@ export const PayMeCoffeeHeader = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setShowAnimation(true);
-      setCurrentDonation((prev) => (prev + 1) % donations.length);
+      setCurrentDonation((prev) => {
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * donations.length);
+        } while (newIndex === prev && donations.length > 1);
+        return newIndex;
+      });
       
       setTimeout(() => setShowAnimation(false), 3000);
     }, 22000);
