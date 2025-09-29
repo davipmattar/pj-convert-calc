@@ -26,10 +26,7 @@ export const CurrencySelector = ({ value, onValueChange }: CurrencySelectorProps
       </label>
       <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger className="w-full bg-white/80 backdrop-blur-sm border-brand-blue/20 hover:border-brand-blue/40 transition-colors">
-          <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-brand-blue" />
-            <SelectValue />
-          </div>
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {currencies.map((currency) => {
