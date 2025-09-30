@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calculator, RefreshCw } from 'lucide-react';
 import { CurrencySelector, Currency } from './CurrencySelector';
-import { SalaryInput } from './SalaryInput';
+import { SalaryInput, SalaryPeriod } from './SalaryInput';
 import { CalculationTable } from './CalculationTable';
 import { ParametersEditor, Parameters } from './ParametersEditor';
 import { useCurrencyRates } from '@/hooks/useCurrencyRates';
@@ -11,6 +11,7 @@ import { useCurrencyRates } from '@/hooks/useCurrencyRates';
 export const PJCalculator = () => {
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>('USD');
   const [salaryInput, setSalaryInput] = useState('5000');
+  const [salaryPeriod, setSalaryPeriod] = useState<SalaryPeriod>('monthly');
   const [parameters, setParameters] = useState<Parameters>({
     taxaConversao: 0.00908, // 0.908%
     iss: 0.0428, // 4.28%
@@ -31,7 +32,8 @@ export const PJCalculator = () => {
   const exchangeRate = rates[selectedCurrency];
 
   const calculations = useMemo(() => {
-    const salarioBruto = parsedSalary;
+    // Se for anual, divide por 12 para obter o valor mensal
+    const salarioBruto = salaryPeriod === 'yearly' ? parsedSalary / 12 : parsedSalary;
     
     // Salário Convertido = (Valor Bruto Salário x Taxa de Câmbio Atual) x (1 - Taxa de conversão)
     const salarioConvertido = (salarioBruto * exchangeRate) * (1 - parameters.taxaConversao);
@@ -68,7 +70,7 @@ export const PJCalculator = () => {
       liquidoMensal,
       liquidoAnual,
     };
-  }, [parsedSalary, exchangeRate, parameters]);
+  }, [parsedSalary, exchangeRate, parameters, salaryPeriod]);
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -106,6 +108,8 @@ export const PJCalculator = () => {
               value={salaryInput}
               onChange={setSalaryInput}
               currency={selectedCurrency}
+              period={salaryPeriod}
+              onPeriodChange={setSalaryPeriod}
             />
 
             <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
