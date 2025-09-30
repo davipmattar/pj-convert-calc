@@ -152,7 +152,7 @@ export const CalculationTable = ({ data, currency, exchangeRate, parameters }: C
 
         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
           <div className="text-sm text-blue-800">
-            <strong>Observação:</strong> Os cálculos são estimativos e podem variar conforme a legislação local. 
+            <strong>Observação:</strong> Os cálculos são estimados e podem variar conforme a legislação local. 
             Consulte sempre um contador para orientações específicas.
           </div>
         </div>
