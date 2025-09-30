@@ -52,7 +52,7 @@ export const CalculationTable = ({ data, currency, exchangeRate, parameters }: C
 
   const rows = [
     { 
-      label: "Valor Bruto Salário", 
+      label: "Valor Bruto Salário (mensal)", 
       value: formatCurrency(data.salarioBruto, true), 
       type: "foreign" as const,
       description: `Salário em ${currency}`
