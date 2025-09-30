@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Settings, Info } from "lucide-react";
 
 export interface Parameters {
@@ -135,18 +135,16 @@ export const ParametersEditor = ({ parameters, onParametersChange }: ParametersE
               <Label htmlFor="proLabore" className="text-sm font-medium">
                 Pro-labore (R$)
               </Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p className="text-sm">
-                      O pro-labore <strong>não é deduzido</strong> do salário. Serve apenas para calcular qual o valor que será pago mensalmente no INSS.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="text-sm">
+                    O pro-labore <strong>não é deduzido</strong> do salário. Serve apenas para calcular qual o valor que será pago mensalmente no INSS.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
             </div>
             <Input
               id="proLabore"
