@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-export type SalaryPeriod = 'monthly' | 'yearly';
+export type SalaryPeriod = 'hourly' | 'monthly' | 'yearly';
 
 interface SalaryInputProps {
   value: string;
@@ -29,6 +29,10 @@ export const SalaryInput = ({ value, onChange, currency, period, onPeriodChange 
           onValueChange={onPeriodChange}
           className="flex gap-4"
         >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="hourly" id="hourly" />
+            <Label htmlFor="hourly" className="text-sm cursor-pointer">Hora</Label>
+          </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="monthly" id="monthly" />
             <Label htmlFor="monthly" className="text-sm cursor-pointer">Mensal</Label>

@@ -32,8 +32,16 @@ export const PJCalculator = () => {
   const exchangeRate = rates[selectedCurrency];
 
   const calculations = useMemo(() => {
-    // Se for anual, divide por 12 para obter o valor mensal
-    const salarioBruto = salaryPeriod === 'yearly' ? parsedSalary / 12 : parsedSalary;
+    // Converte para valor mensal baseado no período
+    let salarioBruto: number;
+    if (salaryPeriod === 'hourly') {
+      // Assumindo 160 horas por mês (40 horas/semana * 4 semanas)
+      salarioBruto = parsedSalary * 160;
+    } else if (salaryPeriod === 'yearly') {
+      salarioBruto = parsedSalary / 12;
+    } else {
+      salarioBruto = parsedSalary;
+    }
     
     // Salário Convertido = (Valor Bruto Salário x Taxa de Câmbio Atual) x (1 - Taxa de conversão)
     const salarioConvertido = (salarioBruto * exchangeRate) * (1 - parameters.taxaConversao);
