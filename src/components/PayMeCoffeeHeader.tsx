@@ -39,20 +39,29 @@ export const PayMeCoffeeHeader = () => {
   const [showAnimation, setShowAnimation] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setShowAnimation(true);
-      setCurrentDonation((prev) => {
-        let newIndex;
-        do {
-          newIndex = Math.floor(Math.random() * donations.length);
-        } while (newIndex === prev && donations.length > 1);
-        return newIndex;
-      });
+    const scheduleNextDonation = () => {
+      const randomInterval = Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000;
       
-      setTimeout(() => setShowAnimation(false), 3000);
-    }, 32000);
+      return setTimeout(() => {
+        setShowAnimation(true);
+        setCurrentDonation((prev) => {
+          let newIndex;
+          do {
+            newIndex = Math.floor(Math.random() * donations.length);
+          } while (newIndex === prev && donations.length > 1);
+          return newIndex;
+        });
+        
+        setTimeout(() => setShowAnimation(false), 3000);
+        
+        const nextTimeout = scheduleNextDonation();
+        return nextTimeout;
+      }, randomInterval);
+    };
 
-    return () => clearInterval(interval);
+    const timeout = scheduleNextDonation();
+
+    return () => clearTimeout(timeout);
   }, [donations.length]);
 
   return (
