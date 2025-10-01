@@ -13,9 +13,30 @@ interface SalaryInputProps {
 }
 
 export const SalaryInput = ({ value, onChange, currency, period, onPeriodChange }: SalaryInputProps) => {
+  const handleDecimalInput = (inputValue: string) => {
+    // Remove tudo exceto dígitos
+    const digits = inputValue.replace(/[^\d]/g, '');
+    
+    if (digits === '') {
+      return '0';
+    }
+    
+    // Converte para decimal (cada dígito representa centavos)
+    const numericValue = parseFloat(digits) / 100;
+    return numericValue.toString();
+  };
+
+  const formatInput = (inputValue: string) => {
+    const numericValue = parseFloat(inputValue.replace(',', '.')) || 0;
+    return numericValue.toLocaleString('pt-BR', { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: 2 
+    });
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.replace(/[^\d.,]/g, '');
-    onChange(inputValue);
+    const newValue = handleDecimalInput(e.target.value);
+    onChange(newValue);
   };
 
   return (
@@ -47,7 +68,7 @@ export const SalaryInput = ({ value, onChange, currency, period, onPeriodChange 
         id="salary"
         type="text"
         placeholder="0,00"
-        value={value}
+        value={formatInput(value)}
         onChange={handleChange}
         className="text-lg bg-white/80 backdrop-blur-sm border-brand-blue/20 hover:border-brand-blue/40 focus:border-brand-blue transition-colors"
       />
