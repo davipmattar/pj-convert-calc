@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { screen, fireEvent, waitFor } from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { PayMeCoffeeHeader } from '../PayMeCoffeeHeader';
 
@@ -103,26 +104,29 @@ describe('PayMeCoffeeHeader', () => {
   test('component renders with correct structure', () => {
     renderWithRouter(<PayMeCoffeeHeader />);
     
-    // Check main container
-    const mainContainer = screen.getByText('Gostou da calculadora?').closest('div');
-    expect(mainContainer?.closest('div')).toHaveClass('bg-gradient-to-r', 'from-amber-50', 'to-orange-50');
+    // Check main container (the sticky banner holding the header)
+    const mainContainer = screen
+      .getByText('Gostou da calculadora?')
+      .closest('div[class*="bg-gradient-to-r"]');
+    expect(mainContainer).toHaveClass('bg-gradient-to-r', 'from-amber-50', 'to-orange-50');
     
     // Check coffee icon is present
     const coffeeIcon = screen.getByText('Gostou da calculadora?').parentElement;
     expect(coffeeIcon?.querySelector('svg')).toBeInTheDocument();
   });
 
-  test('keyboard navigation works correctly', () => {
+  test('keyboard navigation works correctly', async () => {
+    const user = userEvent.setup();
     renderWithRouter(<PayMeCoffeeHeader />);
     
-    const button = screen.getByText('☕ Pay me a Coffee');
+    const button = screen.getByRole('button', { name: /abrir página de doação em nova aba/i });
     
     // Test that button can receive focus
-    button.focus();
+    await user.tab();
     expect(document.activeElement).toBe(button);
     
     // Test Enter key activation
-    fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' });
+    await user.keyboard('{Enter}');
     expect(mockWindowOpen).toHaveBeenCalledWith('/donate', '_blank', 'noopener,noreferrer');
   });
 });
