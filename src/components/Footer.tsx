@@ -1,4 +1,5 @@
 import { Linkedin, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const Footer = () => {
   return (
@@ -30,6 +31,8 @@ export const Footer = () => {
             </a>
           </div>
           
+          <p className="text-sm"><Link to="/calculadora-pj" className="text-brand-blue hover:underline">Como funciona a calculadora PJ</Link></p>
+
           <div className="text-xs text-muted-foreground pt-4">
             <p>
               Esta calculadora fornece estimativas baseadas em parâmetros padrão. 

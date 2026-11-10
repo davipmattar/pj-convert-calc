@@ -6,6 +6,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://tramponagringa.com.br/calculadora-pj</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://tramponagringa.com.br/donate</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
