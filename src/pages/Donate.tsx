@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Coffee, CreditCard, QrCode, Heart, ArrowLeft, Copy, ExternalLink, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 export default function Donate() {
   const [copied, setCopied] = useState(false);
@@ -26,6 +27,14 @@ export default function Donate() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Apoie a Calculadora PJ na Gringa - Doação via PIX ou Cartão</title>
+        <meta name="description" content="Ajude a manter a Calculadora PJ na Gringa gratuita e atualizada com uma doação via PIX ou cartão de crédito." />
+        <link rel="canonical" href="https://tramponagringa.com.br/donate" />
+        <meta property="og:title" content="Apoie a Calculadora PJ na Gringa" />
+        <meta property="og:description" content="Faça uma doação via PIX ou cartão e ajude a manter a calculadora gratuita." />
+        <meta property="og:url" content="https://tramponagringa.com.br/donate" />
+      </Helmet>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
